@@ -1,0 +1,48 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# terraform.tfvars.example
+#
+# Copy this file to terraform.tfvars and fill in your values.
+# NEVER commit terraform.tfvars — it is excluded by .gitignore.
+# Apply runs locally from fam-operator checkout — not from CI.
+# ────────────────────────────────────────────────────
+
+# Proxmox API
+proxmox_api_url      = "https://192.168.1.10:8006/"
+proxmox_api_token    = "terraform@pam!openclaw=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+proxmox_tls_insecure = false   # set true if Proxmox uses a self-signed cert
+proxmox_node         = "pve"
+proxmox_node_address = "192.168.1.10"
+proxmox_ssh_user     = "root"
+
+# Storage
+proxmox_snippets_storage = "local"       # must support snippets content type
+vm_disk_storage          = "local-lvm"   # or "ceph-pool", "ssd", etc.
+
+# VM clone source
+# Create an Ubuntu 22.04 cloud-init template first — see README.
+vm_template_id = 9000
+vm_id          = 200
+
+# VM compute
+vm_name      = "openclaw-vm"
+vm_cores     = 2
+vm_memory_mb = 4096
+vm_disk_size = 20
+
+# Networking
+vm_network_bridge = "vmbr0"
+vm_ip_address     = "dhcp"             # or "192.168.1.100/24" for a static IP
+vm_gateway        = ""                 # required for static IP, e.g. "192.168.1.1"
+vm_dns_servers    = ["1.1.1.1", "8.8.8.8"]
+
+# SSH
+ssh_public_key_path = "~/.ssh/id_rsa.pub"
+ssh_ingress_cidr    = "192.168.1.0/24"  # REQUIRED: restrict SSH to operator network
+
+# OpenClaw (leave empty to install main branch)
+openclaw_version = ""
+
+# HTTPS / Let's Encrypt — required for WhatsApp webhooks
+# Set to the public domain pointing at this VM's IP before provisioning.
+# Leave empty to skip certbot (HTTP only — not suitable for production).
+domain_name = ""   # e.g. "fam.lab86.work"
