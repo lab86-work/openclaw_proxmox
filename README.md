@@ -23,7 +23,7 @@ This is the self-hosted alternative to [`openclaw_oracle`](https://github.com/la
 |------|----------------|
 | [Terraform](https://developer.hashicorp.com/terraform/downloads) | 1.5+ |
 | Proxmox VE | 7.4+ |
-| Ubuntu 22.04 cloud-init template on Proxmox | see below |
+| Ubuntu 26.04 (Resolute) cloud-init template on Proxmox | see below |
 
 ---
 
@@ -31,7 +31,7 @@ This is the self-hosted alternative to [`openclaw_oracle`](https://github.com/la
 
 ```
 Proxmox VE host
- VM (Ubuntu 22.04, cloned from cloud-init template)
+ VM (Ubuntu 26.04 (Resolute), cloned from cloud-init template)
     ├── pnpm + Node.js 22
     ├── openclaw/openclaw (built from source)
     ├── openclaw-gateway.service (systemd)
@@ -50,20 +50,20 @@ Provider: [`bpg/proxmox`](https://registry.terraform.io/providers/bpg/proxmox/la
 Run once on your Proxmox host before first `terraform apply`:
 
 ```bash
-# Download Ubuntu 22.04 cloud image
-wget https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+# Download Ubuntu 26.04 (Resolute) cloud image
+wget https://cloud-images.ubuntu.com/resolute/current/resolute-server-cloudimg-amd64.img
+
+# Install qemu-guest-agent in the image (required for IP discovery)
+virt-customize -a resolute-server-cloudimg-amd64.img --install qemu-guest-agent
 
 # Create a VM template
-qm create 9000 --name ubuntu-2204-template --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
-qm importdisk 9000 jammy-server-cloudimg-amd64.img local-lvm
+qm create 9000 --name ubuntu-2604-template --memory 2048 --cores 2 --net0 virtio,bridge=vmbr0
+qm importdisk 9000 resolute-server-cloudimg-amd64.img local-lvm
 qm set 9000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-9000-disk-0
 qm set 9000 --ide2 local-lvm:cloudinit
 qm set 9000 --boot c --bootdisk scsi0
 qm set 9000 --serial0 socket --vga serial0
 qm set 9000 --agent enabled=1
-
-# Install qemu-guest-agent in the image (required for IP discovery)
-virt-customize -a jammy-server-cloudimg-amd64.img --install qemu-guest-agent
 
 qm template 9000
 ```

@@ -128,7 +128,7 @@ variable "ssh_ingress_cidr" {
   }
 }
 
-OpenClaw # ─── ───────────────────
+#OpenClaw # ─── ───────────────────
 
 variable "openclaw_version" {
   description = "openclaw/openclaw git ref to install (branch, tag, or SHA). Leave empty for main."
