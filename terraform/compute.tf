@@ -8,10 +8,7 @@ resource "proxmox_virtual_environment_file" "user_data" {
   node_name    = var.proxmox_node
 
   source_raw {
-    data = templatefile("${path.module}/scripts/install_openclaw.sh", {
-      openclaw_version = var.openclaw_version
-      domain_name      = var.domain_name
-    })
+    data = file("${path.module}/scripts/install.sh")
     file_name = "openclaw-user-data-${var.vm_id}.sh"
   }
 }
