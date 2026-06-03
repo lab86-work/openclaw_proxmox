@@ -23,10 +23,7 @@ NODE_MIN_VERSION="${NODE_MIN_MAJOR}.${NODE_MIN_MINOR}"
 
 ORIGINAL_PATH="${PATH:-}"
 
-# Prepare-only defaults for cloud-init / non-interactive runs
-INSTALL_DIR="/opt/openclaw"
-OPENCLAW_USER="openclaw"
-
+OPENCLAW_INSTALL_SH_NO_RUN="1"
 
 TMPFILES=()
 cleanup_tmpfiles() {
@@ -3118,42 +3115,6 @@ main() {
         exit 1
     fi
 
-    # If requested (or running non-interactively by default), only prepare the
-    # environment: install Node/git/pnpm, fix npm perms, create system user and
-    # install directory. Skip the actual OpenClaw install steps.
-    if [[ "${OPENCLAW_PREPARE_ONLY:-0}" == "1" ]]; then
-        ui_stage "Preparing system (prepare-only mode)"
-
-        # Update package lists on apt systems
-        if command -v apt-get >/dev/null 2>&1; then
-            apt_get_update || true
-        fi
-
-        # Ensure git is available
-        if ! check_git; then
-            install_git || true
-        fi
-
-        # Ensure pnpm (or corepack shim) is available for later installs
-        ensure_pnpm || ensure_pnpm_binary_for_scripts || true
-
-        # Fix npm perms for global installs
-        fix_npm_permissions || true
-
-        # Create install directory and system user
-        ui_info "Creating install directory: ${INSTALL_DIR}"
-        mkdir -p "${INSTALL_DIR}"
-
-        ui_info "Ensuring system user: ${OPENCLAW_USER}"
-        if ! id "${OPENCLAW_USER}" &>/dev/null; then
-            useradd --system --shell /bin/bash --no-create-home --home-dir "${INSTALL_DIR}" "${OPENCLAW_USER}" || true
-        fi
-        chown -R "${OPENCLAW_USER}:${OPENCLAW_USER}" "${INSTALL_DIR}" 2>/dev/null || true
-
-        ui_success "Preparation complete; OpenClaw installation skipped (prepare-only mode)"
-        return 0
-    fi
-
     ui_stage "Installing OpenClaw"
 
     local final_git_dir=""
@@ -3389,14 +3350,5 @@ if [[ "${OPENCLAW_INSTALL_SH_NO_RUN:-0}" != "1" ]]; then
     parse_args "$@"
     configure_install_stage_total
     configure_verbose
-    # Default to prepare-only when running non-interactively (cloud-init),
-    # unless explicitly overridden by OPENCLAW_PREPARE_ONLY=0.
-    if [[ -z "${OPENCLAW_PREPARE_ONLY:-}" ]]; then
-        if is_non_interactive_shell; then
-            OPENCLAW_PREPARE_ONLY=1
-        else
-            OPENCLAW_PREPARE_ONLY=0
-        fi
-    fi
     main
 fi
