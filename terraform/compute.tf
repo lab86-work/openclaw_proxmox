@@ -19,9 +19,8 @@ resource "proxmox_virtual_environment_vm" "openclaw" {
   name      = var.vm_name
   node_name = var.proxmox_node
   vm_id     = var.vm_id
-  tags      = ["openclaw"]
 
-  # Clone from an Ubuntu 22.04 cloud-init template.
+  # Clone from an Ubuntu 26.04 (Resolute) cloud-init template.
   # See README for how to prepare the template on your Proxmox host.
   clone {
     vm_id   = var.vm_template_id
@@ -35,11 +34,12 @@ resource "proxmox_virtual_environment_vm" "openclaw" {
 
   cpu {
     cores = var.vm_cores
-    type  = "x86-64-v2-AES"
+    type  = "host"
   }
 
   memory {
     dedicated = var.vm_memory_mb
+    ballon = 1
   }
 
   disk {
@@ -76,11 +76,11 @@ resource "proxmox_virtual_environment_vm" "openclaw" {
       username = "ubuntu"
     }
 
-    user_data_file_id = proxmox_virtual_environment_file.user_data.id
+    vendor_data_file_id = proxmox_virtual_environment_file.user_data.id
   }
 
   lifecycle {
     # Ignore user_data changes after initial provision — re-run install manually if needed.
-    ignore_changes = [initialization[0].user_data_file_id]
+    ignore_changes = [initialization[0].vendor_data_file_id]
   }
 }
