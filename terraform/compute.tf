@@ -39,7 +39,7 @@ resource "proxmox_virtual_environment_vm" "openclaw" {
 
   memory {
     dedicated = var.vm_memory_mb
-    ballon = 1
+    floating = 1
   }
 
   disk {
