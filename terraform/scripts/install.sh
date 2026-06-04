@@ -1,6 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
+# Ensure HOME is defined when cloud-init runs scripts without a user environment
+# This avoids 'HOME: unbound variable' errors when 'set -u' is in effect.
+export HOME="${HOME:-/root}"
+
 # OpenClaw Installer for macOS and Linux
 # Usage: curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install.sh | bash
 

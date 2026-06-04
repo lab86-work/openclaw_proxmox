@@ -7,10 +7,10 @@ resource "proxmox_virtual_environment_file" "user_data" {
   datastore_id = var.proxmox_snippets_storage
   node_name    = var.proxmox_node
 
-  source_raw {
-    data = file("${path.module}/scripts/install.sh")
-    file_name = "openclaw-user-data-${var.vm_id}.sh"
-  }
+    source_raw {
+      data = file("${path.module}/scripts/install.sh")
+      file_name = "openclaw-user-data-${var.vm_id}.sh"
+    }
 }
 
 # ─── OpenClaw VM ───────────────────────────────────────────────────────────────
