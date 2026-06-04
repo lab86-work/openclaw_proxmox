@@ -1,17 +1,4 @@
-# ─── Cloud-init user data ──────────────────────────────────────────────────────
-# Rendered install script is uploaded to the Proxmox snippets storage via SSH.
-# The bpg provider handles the file transfer automatically.
 
-resource "proxmox_virtual_environment_file" "user_data" {
-  content_type = "snippets"
-  datastore_id = var.proxmox_snippets_storage
-  node_name    = var.proxmox_node
-
-    source_raw {
-      data = file("${path.module}/scripts/install.sh")
-      file_name = "openclaw-user-data-${var.vm_id}.sh"
-    }
-}
 
 # ─── OpenClaw VM ───────────────────────────────────────────────────────────────
 
@@ -75,12 +62,5 @@ resource "proxmox_virtual_environment_vm" "openclaw" {
       keys     = [trimspace(file(var.ssh_public_key_path))]
       username = "ubuntu"
     }
-
-    vendor_data_file_id = proxmox_virtual_environment_file.user_data.id
-  }
-
-  lifecycle {
-    # Ignore user_data changes after initial provision — re-run install manually if needed.
-    ignore_changes = [initialization[0].vendor_data_file_id]
   }
 }

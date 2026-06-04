@@ -39,10 +39,3 @@ vm_dns_servers    = ["1.1.1.1", "8.8.8.8"]
 ssh_public_key_path = "~/.ssh/id_rsa.pub"
 ssh_ingress_cidr    = "192.168.1.0/24"  # REQUIRED: restrict SSH to operator network
 
-# OpenClaw (leave empty to install main branch)
-openclaw_version = ""
-
-# HTTPS / Let's Encrypt — required for WhatsApp webhooks
-# Set to the public domain pointing at this VM's IP before provisioning.
-# Leave empty to skip certbot (HTTP only — not suitable for production).
-domain_name = ""   # e.g. "fam.lab86.work"

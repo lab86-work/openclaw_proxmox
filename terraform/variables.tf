@@ -128,16 +128,3 @@ variable "ssh_ingress_cidr" {
   }
 }
 
-#OpenClaw # ─── ───────────────────
-
-variable "openclaw_version" {
-  description = "openclaw/openclaw git ref to install (branch, tag, or SHA). Leave empty for main."
-  type        = string
-  default     = ""
-}
-
-variable "domain_name" {
-  description = "Public domain name for the VM (e.g. fam.lab86.work). Required for HTTPS/Let's Encrypt. WhatsApp webhooks require HTTPS."
-  type        = string
-  default     = ""
-}

@@ -15,10 +15,6 @@ output "instance_public_ip" {
   value       = local.vm_ip
 }
 
-output "openclaw_url" {
-  description = "Base URL to access the OpenClaw instance."
-  value       = "http://${local.vm_ip}"
-}
 
 output "ssh_command" {
   description = "SSH command to connect to the VM."

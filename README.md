@@ -1,8 +1,8 @@
 # openclaw_proxmox
 
-Terraform project to deploy a VM in **Proxmox VE** and automatically install **[OpenClaw](https://github.com/openclaw/openclaw)** via cloud-init.
+Terraform project to deploy a VM in **Proxmox VE** configured for **[OpenClaw](https://github.com/openclaw/openclaw)**.
 
-This is the self-hosted alternative to [`openclaw_oracle`](https://github.com/lab86-work/openclaw_oracle) for operators running their own Proxmox hypervisor.
+This is the self-hosted alternative to [`openclaw_oracle`](https://github.com/lab86-work/openclaw_oracle) for operators running their own Proxmox hypervisor. Note that this project provisions the infrastructure; the installation of OpenClaw itself is left to the user.
 
 ---
 
@@ -32,11 +32,6 @@ This is the self-hosted alternative to [`openclaw_oracle`](https://github.com/la
 ```
 Proxmox VE host
  VM (Ubuntu 26.04 (Resolute), cloned from cloud-init template)
-    ├── pnpm + Node.js 22
-    ├── openclaw/openclaw (built from source)
-    ├── openclaw-gateway.service (systemd)
- nginx (reverse proxy → port 18789)    └─
-         └── optional: Let's Encrypt TLS (when domain_name is set)
 ```
 
 All resources are created inline — no external Terraform modules are used.
@@ -125,13 +120,18 @@ fam provision --family alpha
 
 ---
 
+## Manual OpenClaw Installation
+
+After running Terraform and obtaining the `ssh_command`, SSH into the VM to perform the installation. You can follow the official [OpenClaw documentation](https://github.com/openclaw/openclaw) to install the necessary dependencies and the application.
+
+---
+
 ## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `instance_id` | Proxmox VM ID |
 | `instance_public_ip` | IP address of the VM |
-| `openclaw_url` | `http://<ip>` (or `https://` when `domain_name` is set) |
 | `ssh_command` | Ready-to-use SSH command |
 
 ---
