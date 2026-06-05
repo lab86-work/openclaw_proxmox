@@ -26,7 +26,7 @@ resource "proxmox_virtual_environment_vm" "openclaw" {
 
   memory {
     dedicated = var.vm_memory_mb
-    floating = 1
+    floating  = var.vm_memory_mb
   }
 
   disk {
@@ -50,7 +50,7 @@ resource "proxmox_virtual_environment_vm" "openclaw" {
     ip_config {
       ipv4 {
         address = var.vm_ip_address
-        gateway = var.vm_ip_address == "dhcp" ? null : var.vm_gateway
+        gateway = var.vm_gateway
       }
     }
 
